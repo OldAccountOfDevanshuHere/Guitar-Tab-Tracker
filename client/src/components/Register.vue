@@ -1,0 +1,34 @@
+<template>
+  <div>
+      <h1>
+          Jaadu
+      </h1>
+
+      <input type="email" v-model="email" name="email" placeholder="email">
+      <br>
+      <input type="password" v-model="password" name="password" placeholder="password">
+      <br>
+      <button>Register</button>
+  </div>
+</template>
+
+<script>
+/* eslint-disable */
+export default {
+  data () {
+    return {
+        email: "asd",
+        password: "asd"
+    }
+  },
+  watch:{
+      email(value){
+          console.log('Heyyy')
+      }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
