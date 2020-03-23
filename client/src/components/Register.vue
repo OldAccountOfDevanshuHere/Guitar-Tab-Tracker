@@ -8,22 +8,26 @@
       <br>
       <input type="password" v-model="password" name="password" placeholder="password">
       <br>
-      <button>Register</button>
+      <button @click="register">Register</button>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
+import AuthenticationService from '@/services/AuthenticationService'
 export default {
   data () {
     return {
-        email: "asd",
-        password: "asd"
+        email: "",
+        password: ""
     }
   },
-  watch:{
-      email(value){
-          console.log('Heyyy')
+  methods: {
+      async register() {
+         await AuthenticationService.register({
+              email: this.email,
+              password: this.password
+          })
       }
   }
 }
