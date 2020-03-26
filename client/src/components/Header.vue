@@ -1,24 +1,24 @@
 <template>
-  <v-toolbar fixed class="grey">
+  <v-toolbar fixed dark>
     <v-toolbar-title class="mr-4">
-      <v-btn flat dark :to="{ name: 'root' }">
-        TabTracker
-      </v-btn>
+      <v-btn :to="{name: 'root'}" flat dark>
+      TabTracker
+    </v-btn>
     </v-toolbar-title>
     <v-toolbar-items>
-      <v-btn flat @click="navigateTo({name: 'songs'})">
+      <v-btn @click="navigateTo({ name: 'songs' })" flat block dark>
         Browse
       </v-btn>
     </v-toolbar-items>
     <v-spacer></v-spacer>
     <v-toolbar-items>
-      <v-btn v-if="!$store.state.isUserLoggedIn" flat @click="navigateTo({ name: 'login' })">
+      <v-btn  v-if="!$store.state.isUserLoggedIn" dark class="mr-2" @click="navigateTo({ name: 'login' })" flat>
         Login
       </v-btn>
-      <v-btn v-if="!$store.state.isUserLoggedIn" flat @click="navigateTo({ name: 'register' })">
+      <v-btn flat v-if="!$store.state.isUserLoggedIn" dark @click="navigateTo({ name: 'register' })">
         Sign Up
       </v-btn>
-      <v-btn v-if="$store.state.isUserLoggedIn" flat @click="logout">
+      <v-btn flat v-if="$store.state.isUserLoggedIn" dark @click="logout">
         Logout
       </v-btn>
     </v-toolbar-items>
@@ -42,4 +42,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+.red {
+  background-color: red !important;
+}
+</style>

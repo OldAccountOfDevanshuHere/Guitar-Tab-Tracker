@@ -1,68 +1,108 @@
 <template>
-  <v-layout column>
-    <v-flex xs6 offset-xs3>
-    <search-panel class="mb-2">
-    </search-panel>
-      <panel title="Songs">
-        <v-btn
-          slot="action"
-          :to="{
-            name: 'songs-create'
-          }"
-          class="grey"
-          light
-          medium
-          absolute
-          right
-          middle
-          fab
-        >
-          <v-icon>add</v-icon>
-        </v-btn>
-    <div 
-      v-for="song in songs"
-      class="song"
-      :key="song.id">
-
-      <v-layout>
-        <v-flex xs6>
-          <div class="song-title">
-            {{song.title}}
+  <div class="wrapperDiv">
+    <v-layout>
+      <v-flex xs6 mr-2 v-if="$store.state.isUserLoggedIn">
+        <div class="white elevation-2 ml-0 mr-0 pl-0 pr-0">
+          <v-toolbar flat dense class="black" dark>
+            <v-toolbar-title class="mt-2">
+              <!-- TODO CenterME -->
+              <span class="centerMe">
+                <h4>
+                  {{currDisp}}
+                  <v-btn absolute right class="red mt-1" @click="switchLayout">
+                    Show {{nxtDisp}}
+                  </v-btn>
+                </h4>
+              </span>
+            </v-toolbar-title>
+            <slot name="action" />
+          </v-toolbar>
+        <div class="pl-4 pr-4 pt-2 pb-2">
+          <div v-if="currDisp == 'Bookmarks'"   >
+            <div v-for="bookmark in bookmarks" :key="bookmark.SongId" @click="console.log('hiii')">
+              {{bookmark.Song.title}} by {{bookmark.Song.artist}}
+            </div>
           </div>
-          <div class="song-artist">
-            {{song.artist}}
-          </div>
-          <div class="song-genre">
-            {{song.genre}}
-          </div>
-
+        </div>
+      </div>
+      </v-flex>
+      <v-flex xs6 :class="{
+        'offset-xs3': !$store.state.isUserLoggedIn,
+        'mr-4': $store.state.isUserLoggedIn
+      }">
+      <search-panel class="mb-2" />
+      </v-flex>
+    </v-layout>
+    <v-layout>
+      <v-flex offset-xs3 xs6>
+        <panel title="Songs">
           <v-btn
-            dark
-            class="grey"
+            slot="action"
             :to="{
-              name: 'song', 
-              params: {
-                songId: song.id
-              }
-            }">
-            View
+              name: 'songs-create'
+            }"
+            class="red"
+            absolute
+            right
+            fab
+          >
+            <v-icon>add</v-icon>
           </v-btn>
-        </v-flex>
+      <div 
+        v-for="song in songs"
+        class="song"
+        :key="song.id">
 
-        <v-flex xs6>
-          <img class="album-image" :src="song.albumImageUrl" />
-        </v-flex>
-      </v-layout>
+        <v-layout>
+          <v-flex xs6>
+            <div class="song-title">
+              {{song.title}}
+            </div>
+            <div class="song-artist">
+              {{song.artist}}
+            </div>
+            <div class="song-genre">
+              {{song.genre}}
+            </div>
+
+            <v-btn
+              dark
+              class="red"
+              :to="{
+                name: 'song', 
+                params: {
+                  songId: song.id
+                }
+              }">
+              View
+            </v-btn>
+            <br>
+            <v-btn
+              dark
+              class="red"
+              :href='"https://www.youtube.com/watch?v="+ song.youtubeId'>
+              play
+            </v-btn>
+          </v-flex>
+
+          <v-flex xs6>
+            <img class="album-image" :src="song.albumImageUrl" />
+          </v-flex>
+        </v-layout>
+        <br><br>
+        <hr>
+         </div>
+        </panel>
+      </v-flex>
+    </v-layout>
     </div>
-      </panel>
-    </v-flex>
-  </v-layout>
 </template>
-
 <script>
 import Panel from '@/components/Panel'
 import SearchPanel from '@/components/SearchPanel'
 import SongsService from '@/services/SongsService'
+import BookmarksService from '@/services/BookmarksService'
+
 export default {
   components: {
     Panel,
@@ -70,20 +110,51 @@ export default {
   },
   data () {
     return {
-      songs: null
+      headers: [
+        {
+          text: 'Title',
+          value: 'title',
+          align: 'left'
+        },
+        {
+          text: 'Artist',
+          value: 'artist',
+          align: 'right'
+        }
+      ],
+      songs: null,
+      currDisp: 'History',
+      nxtDisp: 'Bookmarks',
+      bookmarks: null,
+      sList: []
     }
   },
-  // async mounted () {
-  //   this.songs = (await SongsService.index()).data
-  // },
+  methods: {
+    switchLayout () {
+      if (this.currDisp === 'History') {
+        this.currDisp = 'Bookmarks'
+        this.nxtDisp = 'History'
+      } else {
+        this.currDisp = 'History'
+        this.nxtDisp = 'Bookmarks'
+      }
+    }
+  },
   watch: {
     '$route.query.search': {
       immediate: true,
       async handler (value) {
         this.songs = (await SongsService.index(value)).data
-        console.log(this.songs)
       }
     }
+  },
+  async mounted () {
+    console.log('mounted function')
+    this.bookmarks = (await BookmarksService.indexAll({
+      songId: 1,
+      userId: 1
+    })).data
+    console.log(this.bookmarks)
   }
 }
 </script>
@@ -106,5 +177,10 @@ export default {
 .album-image {
   width: 70%;
   margin: 0 auto;
+}
+#makeWrapper {
+  margin: 0px !important;
+  padding: 0px !important;
+  color: blue !important;
 }
 </style>

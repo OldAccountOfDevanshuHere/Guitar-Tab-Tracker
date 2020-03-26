@@ -1,11 +1,16 @@
 <template>
-  <div class="white elevation-2">
-    <v-toolbar flat dense class="grey" dark>
+  <div class="white elevation-2 ml-0 mr-0 pl-0 pr-0">
+    <v-toolbar flat dense class="black" dark>
       <v-toolbar-title class="mt-2">
         <!-- TODO CenterME -->
         <span class="centerMe">
           <h4>
             {{ title }}
+                         
+            <v-btn absolute right class="red mt-1" v-if="title == ('Bookmarks' || 'History')" @click="switchLayout">
+              {{bVal}}
+            </v-btn>
+
           </h4>
         </span>
         
@@ -22,7 +27,7 @@
 
 <script>
 export default {
-  props: ['title']
+  props: ['title', 'bVal']
 }
 </script>
 

@@ -1,15 +1,15 @@
 <template>
-  <div id="app">
-    <v-app>
+  <v-app>
+    <div id="app">
       <page-header />
       <main>
-        <v-container fluid>
+        <v-container fluid id="makeWrapper">
           <router-view></router-view>
         </v-container>
       </main>
-    </v-app>
+    </div>
+  </v-app>
     <!-- <img src="./assets/logo.png"> -->
-  </div>
 </template>
 
 <script>
@@ -24,7 +24,7 @@ export default {
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -32,16 +32,14 @@ export default {
   margin-top: 60px;
 }
 
-
-.toolbar {
-  /* border-radius: 8px; */
-  /* color: blueviolet; */
-}
-.toolbar__content{
-  /* border-radius: 8px; */
+.wrapperDiv {
+  margin: 0px;
+  padding: 0px;
 }
 
 .toolbar__title > btn{
   font-size: 35px;
 }
+
+
 </style>

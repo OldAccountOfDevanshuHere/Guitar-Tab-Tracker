@@ -1,7 +1,7 @@
 const path = require('path')
 
 module.exports = {
-  port: process.env.PORT || 6010,
+  port: process.env.PORT || 7080,
   db: {
     database: process.env.DB_NAME || 'tabtracker',
     user: process.env.DB_USER || 'tabtracker',
