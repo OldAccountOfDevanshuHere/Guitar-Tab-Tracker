@@ -63,6 +63,7 @@ import SongsService from '@/services/SongsService'
 import Panel from '@/components/Panel'
 import { mapState } from 'vuex'
 import BookmarksService from '@/services/BookmarksService'
+import HistoryService from '@/services/HistoryService'
 
 export default {
   data () {
@@ -79,12 +80,16 @@ export default {
   async mounted () {
     const songId = this.$store.state.route.params.songId
     this.song = (await SongsService.show(songId)).data
-    console.log(this.song)
+    // console.log(this.song)
     this.bookmark = (await BookmarksService.index({
       songId: this.song.id,
       userId: this.$store.state.user.id
     })).data
-    console.log('orignal state: ', this.bookmark)
+    HistoryService.post({
+      songId: this.song.id
+      // userId: this.$store.state.user.id
+    })
+    // console.log('orignal state: ', this.bookmark)
   },
   components: {
     Panel

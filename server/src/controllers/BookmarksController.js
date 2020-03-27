@@ -3,7 +3,8 @@ const _ = require('lodash')
 module.exports = {
   async index (req, res) {
     try {
-      const { songId, userId } = req.query
+      const userId = req.user.id
+      const { songId } = req.query
       console.log(songId)
       const bookmark = await Bookmark.findOne({
         where: {
@@ -22,7 +23,8 @@ module.exports = {
   async indexAll (req, res) {
     console.log('reached findAll')
     try {
-      const { userId } = req.query
+      const userId = req.user.id
+      // const { userId } = req.query
       const bookmarks = await Bookmark.findAll({
         where: {
           UserId: userId
@@ -34,11 +36,7 @@ module.exports = {
         ]
       })
         .map(bookmark => bookmark.toJSON())
-        .map(bookmark => _.extend(
-          {},
-          bookmark.Song,
-          bookmark
-        ))
+        .map(bookmark => _.extend({}, bookmark.Song, bookmark))
       res.send(bookmarks)
     } catch (err) {
       console.log(err)
@@ -48,12 +46,12 @@ module.exports = {
     }
   },
   async post (req, res) {
-    console.log('Hitting Backend endpoint')
+    // console.log('Hitting Backend endpoint')
     try {
-      console.log(req.body.params)
+      // console.log(req.body.params)
       const bookmark = await Bookmark.create({
         SongId: req.body.params.songId,
-        UserId: req.body.params.userId
+        UserId: req.user.id
       })
       // console.log(bookmark)
       res.send(bookmark)
@@ -66,7 +64,16 @@ module.exports = {
   async delete (req, res) {
     try {
       const { bookmarkId } = req.params
-      const bookmark = await Bookmark.findByPk(bookmarkId)
+      const bookmark = await Bookmark.findByPk(bookmarkId, {
+        where: {
+          UserId: req.user.id
+        }
+      })
+      if (!bookmark) {
+        return res.status(403).send({
+          error: 'not authorised to delete!'
+        })
+      }
       await bookmark.destroy()
       res.send(bookmark)
     } catch (err) {

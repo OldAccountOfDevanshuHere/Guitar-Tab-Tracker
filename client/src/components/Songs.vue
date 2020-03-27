@@ -23,6 +23,11 @@
               {{bookmark.Song.title}} by {{bookmark.Song.artist}}
             </div>
           </div>
+          <div v-if="currDisp == 'History'"   >
+            <div v-for="things in history" :key="things.SongId" @click="console.log('hiii')">
+              {{things.Song.title}} by {{things.Song.artist}}
+            </div>
+          </div>
         </div>
       </div>
       </v-flex>
@@ -37,6 +42,7 @@
       <v-flex offset-xs3 xs6>
         <panel title="Songs">
           <v-btn
+              v-if="this.$store.state.isUserLoggedIn"
             slot="action"
             :to="{
               name: 'songs-create'
@@ -102,6 +108,7 @@ import Panel from '@/components/Panel'
 import SearchPanel from '@/components/SearchPanel'
 import SongsService from '@/services/SongsService'
 import BookmarksService from '@/services/BookmarksService'
+import HistoryService from '@/services/HistoryService'
 
 export default {
   components: {
@@ -123,9 +130,10 @@ export default {
         }
       ],
       songs: null,
-      currDisp: 'History',
-      nxtDisp: 'Bookmarks',
+      nxtDisp: 'History',
+      currDisp: 'Bookmarks',
       bookmarks: null,
+      history: null,
       sList: []
     }
   },
@@ -150,11 +158,14 @@ export default {
   },
   async mounted () {
     console.log('mounted function')
-    this.bookmarks = (await BookmarksService.indexAll({
-      songId: 1,
-      userId: 1
+    const userId = this.$store.state.user.id
+    this.bookmarks = (await BookmarksService.indexAll()).data
+    console.log('og', this.history)
+    this.history = (await HistoryService.get({
+      userId: userId
     })).data
-    console.log(this.bookmarks)
+    console.log('new', this.history)
+    // console.log(this.$store.state.user.id)
   }
 }
 </script>

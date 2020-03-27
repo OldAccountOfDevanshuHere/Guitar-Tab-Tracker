@@ -25,7 +25,7 @@ module.exports = {
       }
       res.send(songs)
     } catch (err) {
-      console.log(err)
+      // console.log(err)
       return res.status(500).send({
         error: 'Error occured during fetching songs'
       })
@@ -33,8 +33,14 @@ module.exports = {
   },
   async post (req, res) {
     try {
-      const song = await Song.create(req.body)
-      res.send(song)
+      if (req.user.id) {
+        const song = await Song.create(req.body)
+        res.send(song)
+      } else {
+        return res.status(403).send({
+          error: 'Unauthorized to add songs'
+        })
+      }
     } catch (err) {
       return res.status(500).send({
         error: 'Error occured during creating songs'
@@ -57,12 +63,18 @@ module.exports = {
       const song = req.body
       console.log(req.params)
       console.log(req.body)
-      await Song.update(song, {
-        where: {
-          id: songId
-        }
-      })
-      res.send(req.body)
+      if (req.user.id) {
+        await Song.update(song, {
+          where: {
+            id: songId
+          }
+        })
+        res.send(req.body)
+      } else {
+        return res.status(403).send({
+          error: 'Unauthorized to edit songs'
+        })
+      }
     } catch (err) {
       return res.status(500).send({
         error: 'Sorry was not updated'
